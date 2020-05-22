@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 配置accountService的代理对象-->
+    <!--使用创建bean对象的第三种方法创建-->
+    <!--getAccountService是accountService类型 所以在测试类需要加上 @Qualifier("proxyAccountService") -->
+    <bean id="proxyAccountService" factory-bean="beanFactory" factory-method="getAccountService"/>
+
+    <!--配置service set注入-->
+    <!-- AccountServiceImpl impl = new AccountServiceImpl() -->
+    <bean id="accountService" class="fun.chenqi.service.impl.AccountServiceImpl">
+        <property name="dao" ref="accountDao"/>
+        <!-- todo 如果不使用动态代理实现业务则放开这个注释
+             <property name="transactionManager" ref="txManager"/>
+        -->
+    </bean>
+
+    <!--配置dao-->
+    <!--  AccountDaoImpl impl = new AccountDaoImpl()  -->
+    <bean id="accountDao" class="fun.chenqi.dao.impl.AccountDaoImpl">
+        <property name="qr" ref="runner"/>
+        <property name="connectionUtil" ref="connectionUtil"/>
+    </bean>
+    <!--配置connectionUtil-->
+    <bean id="connectionUtil" class="fun.chenqi.util.ConnectionUtil">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--配置事务管理器-->
+    <bean id="txManager" class="fun.chenqi.util.TransactionManager">
+        <property name="connectionUtil" ref="connectionUtil"/>
+    </bean>
+
+    <!--配置beanFactory-->
+    <bean id="beanFactory" class="fun.chenqi.util.BeanFactory">
+        <property name="transactionManager" ref="txManager"/>
+        <property name="accountService" ref="accountService"/>
+    </bean>
+
+    <!-- 配置 QueryRunner -->
+    <bean id="runner" class="org.apache.commons.dbutils.QueryRunner" scope="prototype">
+        <constructor-arg name="ds" ref="dataSource"/>
+    </bean>
+    <!-- 配置数据源 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql:///chenqi"/>
+        <property name="user" value="root"/>
+        <property name="password" value="111"/>
+    </bean>
+
+</beans>

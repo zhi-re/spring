@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--开启注解扫描-->
+    <context:component-scan base-package="fun.chenqi"/>
+
+    <bean id="jdbc" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--配置dbcp数据源-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/chenqi"/>
+        <property name="username" value="root"/>
+        <property name="password" value="111"/>
+    </bean>
+
+    <!-- 第一步：配置事务管理器并注入数据源 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--第二步：在业务层使用@Transactional 注解-->
+
+    <!-- 第三步：开启 spring 对注解事务的支持 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- &lt;!&ndash; 第一步：配置事务管理器 &ndash;&gt;
+     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+         &lt;!&ndash;注入 DataSource &ndash;&gt;
+         <property name="dataSource" ref="dataSource"/>
+     </bean>
+
+     &lt;!&ndash;第二步：配置事务的通知引用事务管理器 相当于要增强的类是谁&ndash;&gt;
+     <tx:advice id="txAdvice" transaction-manager="transactionManager">
+         &lt;!&ndash;第三步：配置事务的属性 &ndash;&gt;
+         &lt;!&ndash;
+         指定方法名称：是业务核心方法
+         read-only：是否是只读事务。默认 false，不只读。
+         isolation：指定事务的隔离级别。默认值是使用数据库的默认隔离级别。
+         propagation：指定事务的传播行为。
+         timeout：指定超时时间。默认值为：-1。永不超时。
+         rollback-for：用于指定一个异常，当执行产生该异常时，事务回滚。
+         产生其他异常，事务不回滚。 没有默认值，任何异常都回滚。
+         no-rollback-for：用于指定一个异常，当产生该异常时，事务不回滚，
+         产生其他异常时，事务回滚。没有默认值，任何异常都回滚。
+         &ndash;&gt;
+         <tx:attributes>
+             <tx:method name="*" read-only="false" propagation="REQUIRED"/>
+             <tx:method name="find*" read-only="true" propagation="SUPPORTS"/>
+         </tx:attributes>
+     </tx:advice>
+
+     &lt;!&ndash;第四步：配置 AOP 切入点表达式 &ndash;&gt;
+     &lt;!&ndash;配置AOP&ndash;&gt;
+     <aop:config>
+         &lt;!&ndash;配置切入点表达式&ndash;&gt;
+         <aop:pointcut id="po" expression="execution(* fun.chenqi.service.impl.*.*(..))"/>
+         &lt;!&ndash; 第五步：配置切入点表达式和事务通知的对应关系 &ndash;&gt;
+         <aop:advisor advice-ref="txAdvice" pointcut-ref="po"/>
+     </aop:config>-->
+
+
+</beans>
