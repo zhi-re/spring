@@ -22,7 +22,7 @@ public class AccountTest {
     private IAccountService service;
 
     @Autowired
-    private void service2(){
+    private void service2() {
         System.out.println("hello");
     }
 
@@ -59,7 +59,7 @@ public class AccountTest {
     public void sel() throws SQLException {
         ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
         Iterator<String> namesIterator = ((ClassPathXmlApplicationContext) ac).getBeanFactory().getBeanNamesIterator();
-        while (namesIterator.hasNext()){
+        while (namesIterator.hasNext()) {
             System.out.println(namesIterator.next());
         }
         //IAccountService service = (IAccountService) ac.getBean("accountServiceImpl");
@@ -69,7 +69,12 @@ public class AccountTest {
         service.select();
     }
 
+    @Test
+    public void testImport() {
+        ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
+        Boss service = (Boss) ac.getBean("boss");
+        System.out.println(service);
 
-
+    }
 
 }
