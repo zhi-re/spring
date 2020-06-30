@@ -2,6 +2,7 @@ package fun.chenqi.web;
 
 import fun.chenqi.dao.domain.Account;
 import fun.chenqi.service.IAccountService;
+import fun.chenqi.service.impl.AccountServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,11 @@ import java.util.Iterator;
 public class AccountTest {
     @Autowired
     private IAccountService service;
+
+    @Autowired
+    private void service2(){
+        System.out.println("hello");
+    }
 
     @Test
     public void ins() throws SQLException {
@@ -57,7 +63,9 @@ public class AccountTest {
             System.out.println(namesIterator.next());
         }
         //IAccountService service = (IAccountService) ac.getBean("accountServiceImpl");
-
+        System.out.println("-------------");
+        service2();
+        System.out.println("-------------");
         service.select();
     }
 
